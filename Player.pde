@@ -3,7 +3,7 @@ int power = 1;
 int nBomb = 1;
 int placedBomb = 0;
 int life = 3;
-int speed = 140;
+int speed = 120;
 
 final float PLAYER_TOUCHED_COOLDOWN = 3.0;
 
@@ -95,7 +95,10 @@ class Player {
         if(posY < destinationY) posY = destinationY;
       }
     }
-    if(destinationX == posX && destinationY == posY)isMoving = false;
+    if(destinationX == posX && destinationY == posY){
+      m.checkPlayerPosEvent();
+      isMoving = false;
+    }
   }
   
 

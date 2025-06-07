@@ -32,6 +32,8 @@ class Map {
   }
 
   void process(float delta) {
+    p.process(delta);
+    
     for (int i = 0; i < bombList.size(); i++)bombList.get(i).process(delta);
     for (int i = 0; i < basicBotList.size(); i++){
       BasicBot b = basicBotList.get(i);
@@ -92,6 +94,9 @@ class Map {
   void drawBot() {
     for (int i = 0; i < basicBotList.size(); i++)basicBotList.get(i).draw();
   }
+  void drawPlayer(){
+    p.draw();
+  }
   void exploseBomb(Bomb b) {
     if (bombList.contains(b))bombList.remove(b);
     for (int x = 0; x < bombSplash.length; x++) {
@@ -121,9 +126,6 @@ class Map {
       level+=1;
       life+=1;
       reset();
-      p.posX = startX*TILE_SIZE;
-      p.posY = startY*TILE_SIZE;
-      p.touchedCooldown = 0;
     } else {
       for (int i = 0; i < bonusList.size(); i++) {
         Bonus b = bonusList.get(i);
@@ -151,16 +153,13 @@ class Map {
   void playerDammage() {
     life--;
     if (life == 0) {
-      reset();
       nBot++;
       life = 3;
       power = 1;
       nBomb = 1;
-      speed = 1;
+      speed = 120;
       level = 1;
-      p.touchedCooldown = 0;
-      p.posX = startX*TILE_SIZE;
-      p.posY = startY*TILE_SIZE;
+      reset();
     } else p.touchedCooldown = PLAYER_TOUCHED_COOLDOWN;
   }
 
@@ -169,6 +168,7 @@ class Map {
     m = new int[sx][sy];
     bombSplash = new float[sx][sy];
     bombList.clear();
+    placedBomb = 0;
     bonusList.clear();
     basicBotList.clear();
     canExitLevel = false;
@@ -269,6 +269,9 @@ class Map {
         }
       }
     }
+    
+    
+    p = new Player(this);
   }
 
   boolean placeBombAt(int px, int py) {

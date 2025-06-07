@@ -3,7 +3,6 @@ import java.util.Iterator;
 final int TILE_SIZE = 64;
 
 Map m;
-Player p;
 
 int level = 1;
 int lastTime = 0;
@@ -17,8 +16,8 @@ void setup(){
   textFont(mono);
   
   m = new Map(15,15);
-  p = new Player(m);
-  m.p = p;
+  
+  loadTexture();
   
   lastTime = millis();
 }
@@ -27,21 +26,20 @@ void draw(){
   deltaTime = (millis() - lastTime) / 1000.0;
   lastTime = millis();
 
-  p.process(deltaTime);
   m.process(deltaTime);
     
   background(0);
   m.draw();
   m.drawBot();
   m.drawBonus();
-  p.draw();
+  m.drawPlayer();
   m.drawBomb();
   drawStats();
 }
 
 void keyPressed(){
-  p.keyPressed(keyCode);
+  m.p.keyPressed(keyCode);
 }
 void keyReleased(){
-  p.keyReleased(keyCode);
+  m.p.keyReleased(keyCode);
 }

@@ -1,12 +1,17 @@
 final int BONUS_TYPE_POWER = 0;
 final int BONUS_TYPE_NBOMB = 1;
 final int BONUS_TYPE_SPEED = 2;
-final int BONUS_TYPE_LIFE = 3;
+final int BONUS_TYPE_LIFE  = 3;
 
-final int WEIGHT_POWER = 4;
-final int WEIGHT_NBOMB = 2;
-final int WEIGHT_SPEED = 4;
-final int WEIGHT_LIFE = 1;
+final float WEIGHT_POWER = 6;
+final float WEIGHT_NBOMB = 2;
+final float WEIGHT_SPEED = 4;
+final float WEIGHT_LIFE  = 1;
+
+PImage imgPower;
+PImage imgNBomb;
+PImage imgSpeed;
+PImage imgLife;
 
 class Bonus{
   int type;
@@ -19,9 +24,21 @@ class Bonus{
     float r = random(WEIGHT_POWER+WEIGHT_NBOMB+WEIGHT_SPEED);
     if(r <= WEIGHT_POWER)type = BONUS_TYPE_POWER;
     else if(r <= WEIGHT_POWER+WEIGHT_NBOMB)type = BONUS_TYPE_NBOMB;
-    else type = BONUS_TYPE_SPEED;
+    else if(r <= WEIGHT_POWER+WEIGHT_NBOMB+WEIGHT_SPEED)type = BONUS_TYPE_SPEED;
+    else type = BONUS_TYPE_LIFE;
   }
   void draw(){
+    
+    //IMAGE
+    switch(type){
+      case BONUS_TYPE_POWER: image(imgPower, posX * TILE_SIZE, posY * TILE_SIZE);break;
+      case BONUS_TYPE_NBOMB: image(imgNBomb, posX * TILE_SIZE, posY * TILE_SIZE);break;
+      case BONUS_TYPE_SPEED: image(imgSpeed, posX * TILE_SIZE, posY * TILE_SIZE);break;
+      case BONUS_TYPE_LIFE : image(imgLife, posX * TILE_SIZE, posY * TILE_SIZE);break;
+    }
+    
+    
+    /* DRAWING
     switch(type){
       case BONUS_TYPE_POWER: fill(128,0,128);break;
       case BONUS_TYPE_NBOMB: fill(255,127,0);break;
@@ -41,5 +58,6 @@ class Bonus{
         x + half,         y + three_quarter,  // Bas
         x + quarter,      y + half            // Gauche
         );
+    */
   }
 }

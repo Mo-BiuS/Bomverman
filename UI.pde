@@ -9,7 +9,7 @@ void drawStats(){
   fill(0,255,0);
   text("Life:" + life, 1024/6*3-32, 960);
   fill(0,0,255);
-  text("Speed:" + speed/100, 1024/6*4-32, 960);
+  text("Speed:" + float(speed)/100, 1024/6*4-32, 960);
   fill(255);
   text("Level:" + level, 1024/6*5-32, 960);
   
