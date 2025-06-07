@@ -7,7 +7,7 @@ final int END = 5;
 
 final int SUB_WALL = 8;
 final float OBSTACLE_FILLING_RATIO = .4;
-final float BONUS_RATIO = .2;
+final float BONUS_RATIO = .8;
 int nBot = 4;
 
 class Map {
