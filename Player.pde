@@ -21,6 +21,8 @@ class Player {
   float destinationX, destinationY;
   Map map;
 
+  int actualDirection;
+
   Player(Map m) {
     map = m;
     posX = map.startX*TILE_SIZE;
@@ -35,7 +37,34 @@ class Player {
     }
     if (touchedCooldown > 0) touchedCooldown-=delta;
   }
+  
+  void draw() {
+    if (touchedCooldown <= 0 || int(touchedCooldown*4)%2 == 0) {
+      fill(0, 0, 255);
+      ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/4*3, TILE_SIZE/4*3);
 
+      if(!isMoving)drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+      else{
+        switch(actualDirection){
+          case DIR_UP:
+          drawBellow(int(posX/TILE_SIZE),int((posY-1)/TILE_SIZE)+1,map);
+          break;
+          case DIR_RIGHT:
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+          drawBellow(int(posX/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
+          break;
+          case DIR_DOWN:
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE)+1,map);
+          break;
+          case DIR_LEFT: 
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+          drawBellow(int((posX-1)/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
+          break;
+        }
+      }
+    }
+  }
+  
   void tryStartMove() {
     int tileX = int(posX / TILE_SIZE);
     int tileY = int(posY / TILE_SIZE);
@@ -44,26 +73,34 @@ class Player {
       if (direction[DIR_UP] && lastPressedDirection == DIR_UP && map.canMoveTo(tileX, tileY - 1)) {
         startMove(tileX, tileY - 1);
         lastPressedDirection = -1;
+        actualDirection = DIR_UP;
       } else if (direction[DIR_RIGHT] && lastPressedDirection == DIR_RIGHT && map.canMoveTo(tileX + 1, tileY)) {
         startMove(tileX + 1, tileY);
         lastPressedDirection = -1;
+        actualDirection = DIR_RIGHT;
       } else if (direction[DIR_DOWN] && lastPressedDirection == DIR_DOWN && map.canMoveTo(tileX, tileY + 1)) {
         startMove(tileX, tileY + 1);
         lastPressedDirection = -1;
+        actualDirection = DIR_DOWN;
       } else if (direction[DIR_LEFT] && lastPressedDirection == DIR_LEFT && map.canMoveTo(tileX - 1, tileY)) {
         startMove(tileX - 1, tileY);
         lastPressedDirection = -1;
+        actualDirection = DIR_LEFT;
       }
     }
 
     if (isMoving == false && direction[DIR_UP] && map.canMoveTo(tileX, tileY - 1)) {
       startMove(tileX, tileY - 1);
+      actualDirection = DIR_UP;
     } else if (direction[DIR_RIGHT] && map.canMoveTo(tileX + 1, tileY)) {
       startMove(tileX + 1, tileY);
+      actualDirection = DIR_RIGHT;
     } else if (direction[DIR_DOWN] && map.canMoveTo(tileX, tileY + 1)) {
       startMove(tileX, tileY + 1);
+      actualDirection = DIR_DOWN;
     } else if (direction[DIR_LEFT] && map.canMoveTo(tileX - 1, tileY)) {
       startMove(tileX - 1, tileY);
+      actualDirection = DIR_LEFT;
     }
   }
 
@@ -109,12 +146,7 @@ class Player {
     return int((posY+TILE_SIZE/2)/TILE_SIZE);
   }
 
-  void draw() {
-    if (touchedCooldown <= 0 || int(touchedCooldown*4)%2 == 0) {
-      fill(0, 0, 255);
-      ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/4*3, TILE_SIZE/4*3);
-    }
-  }
+  
 
   void keyPressed(int k) {
     switch(k) {

@@ -16,10 +16,12 @@ PImage imgLife;
 class Bonus{
   int type;
   int posX,posY;
+  Map map;
   
-  Bonus(int px, int py){
+  Bonus(int px, int py, Map m){
     posX = px;
     posY = py;
+    map = m;
     
     float r = random(WEIGHT_POWER+WEIGHT_NBOMB+WEIGHT_SPEED);
     if(r <= WEIGHT_POWER)type = BONUS_TYPE_POWER;
@@ -36,7 +38,7 @@ class Bonus{
       case BONUS_TYPE_SPEED: image(imgSpeed, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
       case BONUS_TYPE_LIFE : image(imgLife, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
     }
-    
+    drawBellow(posX,posY,map);
     
     /* DRAWING
     switch(type){

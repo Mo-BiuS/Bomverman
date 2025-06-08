@@ -1,10 +1,18 @@
+PImage[] slimeIdle; 
+PImage[] slimeDown; 
+
 class BasicBot{
-  int posX, posY;
-  int destX, destY;
+  final float ANIM_DURATION = .3;
+  
+  float posX, posY;
+  float destX, destY;
+  float animationTime;
   int botSpeed = 120;
   int lastDirection;
   Map map;
   boolean isMoving;
+  
+  
   
   BasicBot(int px, int py, Map m){
     map = m;
@@ -15,16 +23,43 @@ class BasicBot{
   }
   
   void draw(){
-      fill(255, 0, 0);
-      ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+      
+      if(!isMoving){
+        image(slimeIdle[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
+        drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+      }
+      else{
+        switch(lastDirection){
+          case 0:
+          fill(255, 0, 0);
+          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          drawBellow(int(posX/TILE_SIZE),int((posY-1)/TILE_SIZE)+1,map);
+          break;
+          case 1:
+          fill(255, 0, 0);
+          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+          drawBellow(int(posX/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
+          break;
+          case 2:
+          image(slimeIdle[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE)+1,map);
+          break;
+          case 3: 
+          fill(255, 0, 0);
+          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+          drawBellow(int((posX-1)/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
+          break;
+        }
+      }
   }
   
   void process(float delta){
-    if (!isMoving) {
-      tryStartMove();
-    } else {
-      moveTowardsDestination(delta);
-    }
+    animationTime+=delta;
+    if(animationTime >= ANIM_DURATION*4)animationTime = 0;
+    if (isMoving) moveTowardsDestination(delta);
+    if (!isMoving)tryStartMove();
   }
   
   void tryStartMove(){
@@ -65,21 +100,21 @@ class BasicBot{
     float mvm = botSpeed*delta;
     if(posX != destX){
       if(posX < destX){
-        posX += mvm*1.2;
+        posX += mvm;
         if(posX > destX) posX = destX;
       }
       else{
-        posX -= mvm*.8;
+        posX -= mvm;
         if(posX < destX) posX = destX;
       }
     }
     if(posY != destY){
       if(posY < destY){
-        posY += mvm*1.2;
+        posY += mvm;
         if(posY > destY) posY = destY;
       }
       else{
-        posY -= mvm*.8;
+        posY -= mvm;
         if(posY < destY) posY = destY;
       }
     }

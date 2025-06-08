@@ -9,15 +9,15 @@ int lastTime = 0;
 float deltaTime = 0;
 
 void setup(){
-  size(960,1024);
+  size(960,1040);
   noStroke();
   frameRate(120);
   PFont mono = createFont("FSEX300.ttf", 32);
   textFont(mono);
-  
-  m = new Map(15,15);
-  
+    
   loadTexture();
+  m = new Map(15,15);
+
   
   lastTime = millis();
 }
@@ -29,11 +29,13 @@ void draw(){
   m.process(deltaTime);
     
   background(0);
+  translate(0,TILE_SIZE/4);
   m.draw();
   m.drawBot();
   m.drawBonus();
   m.drawPlayer();
   m.drawBomb();
+  translate(0,-TILE_SIZE/4);
   drawStats();
 }
 

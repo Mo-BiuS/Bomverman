@@ -10,8 +10,21 @@ final float OBSTACLE_FILLING_RATIO = .4;
 final float BONUS_RATIO = .2;
 int nBot = 4;
 
-PImage imgTile;
+ArrayList<PImage> imgTile;
 PImage imgObstacle;
+PImage imgItemObstacle;
+PImage imgEndDeasctivated;
+PImage imgEndActivated;
+PImage imgWall;
+
+PImage imgHalfObstacle;
+PImage imgHalfItemObstacle;
+PImage imgHalfWall;
+
+PGraphics imgAllTIle;
+PGraphics imgAllObstacle;
+PGraphics imgAllWall;
+
 
 class Map {
   final int START_RANGE = 1;
@@ -53,37 +66,18 @@ class Map {
   }
 
   void draw() {
-    for (int x = 0; x < m.length; x++) {
-      for (int y = 0; y < m[0].length; y++) {
-        switch(m[x][y]) {
-        case GROUND:
-          fill(255);
-          break;
-        case WALL:
-          fill(0);
-          break;
-        case OBSTACLE:
-          fill(100);
-          break;
-        case ITEM_OBSTACLE:
-          fill(100, 92, 68);
-          break;
-        case START:
-          fill(255);
-          break;
-        case END:
-          if (canExitLevel)fill(0, 200, 0);
-          else fill(255);
-          break;
-        }
-        rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-      }
-    }
+    image(imgAllTIle,0,0);
+    translate(0,-TILE_SIZE/4);
+    image(imgAllWall,0,0);
+    translate(0,TILE_SIZE/4);
+    if(canExitLevel)image(imgEndActivated, endX * TILE_SIZE, endY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
+    
     fill(255, 0, 0);
     for (int x = 0; x < m.length; x++) {
       for (int y = 0; y < m[0].length; y++) {
         if (bombSplash[x][y] > 0) {
           rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+          drawBellow(x,y,this);
         }
       }
     }
@@ -118,10 +112,11 @@ class Map {
               it.remove(); // Sécurisé, pas d'erreur
             }
           }
-          if (basicBotList.isEmpty())canExitLevel = true;
         }
       }
     }
+    if (basicBotList.isEmpty())canExitLevel = true;
+    generateAllWall();
   }
 
   void checkPlayerPosEvent() {
@@ -252,7 +247,35 @@ class Map {
     endX = ex;
     endY = ey;
     m[ex][ey] = END;
-
+    
+    //imgAllTIle
+    imgAllTIle = createGraphics(TILE_SIZE*(m.length+1),TILE_SIZE*(m[0].length+1));
+    imgAllTIle.beginDraw();
+    for (int x = 0; x < m.length; x++) {
+      for (int y = 0; y < m[0].length; y++) {
+        switch(m[x][y]){
+          case GROUND:
+          case OBSTACLE:
+          case ITEM_OBSTACLE:
+          case START:
+          for (int x1 = 0; x1 < 2; x1++) {
+            for (int y1 = 0; y1 < 2; y1++) {
+              PImage p = imgTile.get(int(random(imgTile.size())));
+              imgAllTIle.image(p,x*TILE_SIZE+x1*TILE_SIZE/2,y*TILE_SIZE+y1*TILE_SIZE/2,TILE_SIZE/2,TILE_SIZE/2);
+            }
+          }
+          break;
+          case END:
+          imgAllTIle.image(imgEndDeasctivated,x*TILE_SIZE,y*TILE_SIZE,TILE_SIZE,TILE_SIZE);
+          break;
+        }
+      }
+    }
+    imgAllTIle.endDraw();
+    
+    //imgAllWall
+    generateAllWall();
+    
     //loactePlayerArea
     ArrayList<PVector> playerStartArea = getPlayerStartArea(startX, startY);
 
@@ -276,14 +299,35 @@ class Map {
     
     p = new Player(this);
   }
-
+  
+  void generateAllWall(){
+    imgAllWall = createGraphics(TILE_SIZE*(m.length+1),TILE_SIZE*(m[0].length+1));
+    imgAllWall.beginDraw();
+    for (int x = 0; x < m.length; x++) {
+      for (int y = 0; y < m[0].length; y++) {
+        switch(m[x][y]) {
+        case WALL:
+          imgAllWall.image(imgWall, x * TILE_SIZE, y * TILE_SIZE,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+        case OBSTACLE:
+          imgAllWall.image(imgObstacle, x * TILE_SIZE, y * TILE_SIZE,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+        case ITEM_OBSTACLE:
+          imgAllWall.image(imgItemObstacle, x * TILE_SIZE, y * TILE_SIZE,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+        }
+      }
+    }
+    imgAllWall.endDraw();
+  }
+  
   boolean placeBombAt(int px, int py) {
     bombList.add(new Bomb(px, py, power, this));
     return true;
   }
 
   void spawnBonusAt(int px, int py) {
-    bonusList.add(new Bonus(px, py));
+    bonusList.add(new Bonus(px, py, this));
   }
 
   boolean isThereBombAt(int px, int py) {

@@ -47,6 +47,7 @@ class Bomb{
   
   void draw(){
     image(imgBomb, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
+    drawBellow(posX,posY,map);
     /*
     fill(128,0,128);
     ellipse(posX*TILE_SIZE+TILE_SIZE/2,posY*TILE_SIZE+TILE_SIZE/2,TILE_SIZE/2,TILE_SIZE/2);
