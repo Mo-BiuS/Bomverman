@@ -1,6 +1,8 @@
 final float bombTimer = 3;
 final float explosionDuration = .2;
 
+PImage imgBomb;
+
 class Bomb{
   int posX, posY;
   int bombPower;
@@ -44,7 +46,10 @@ class Bomb{
   }
   
   void draw(){
+    image(imgBomb, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
+    /*
     fill(128,0,128);
     ellipse(posX*TILE_SIZE+TILE_SIZE/2,posY*TILE_SIZE+TILE_SIZE/2,TILE_SIZE/2,TILE_SIZE/2);
+    */
   }
 }

@@ -31,10 +31,10 @@ class Bonus{
     
     //IMAGE
     switch(type){
-      case BONUS_TYPE_POWER: image(imgPower, posX * TILE_SIZE, posY * TILE_SIZE);break;
-      case BONUS_TYPE_NBOMB: image(imgNBomb, posX * TILE_SIZE, posY * TILE_SIZE);break;
-      case BONUS_TYPE_SPEED: image(imgSpeed, posX * TILE_SIZE, posY * TILE_SIZE);break;
-      case BONUS_TYPE_LIFE : image(imgLife, posX * TILE_SIZE, posY * TILE_SIZE);break;
+      case BONUS_TYPE_POWER: image(imgPower, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
+      case BONUS_TYPE_NBOMB: image(imgNBomb, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
+      case BONUS_TYPE_SPEED: image(imgSpeed, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
+      case BONUS_TYPE_LIFE : image(imgLife, posX * TILE_SIZE, posY * TILE_SIZE,TILE_SIZE,TILE_SIZE);break;
     }
     
     

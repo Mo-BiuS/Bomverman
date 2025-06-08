@@ -7,8 +7,11 @@ final int END = 5;
 
 final int SUB_WALL = 8;
 final float OBSTACLE_FILLING_RATIO = .4;
-final float BONUS_RATIO = .8;
+final float BONUS_RATIO = .2;
 int nBot = 4;
+
+PImage imgTile;
+PImage imgObstacle;
 
 class Map {
   final int START_RANGE = 1;
@@ -189,7 +192,7 @@ class Map {
     while (s > 0) {
       int rx = int(random(sx));
       int ry = int(random(sy));
-      if (m[rx][ry] != WALL && ((rx%2==0 && ry%2==1) || (rx%2==1 && ry%2==0)) && !doesGenWallAtCreateInaccessibleTile(rx, ry, f)) {
+      if (m[rx][ry] != WALL && ((rx%2==0 && ry%2==1) || (rx%2==1 && ry%2==0)) && !doesGenWallAtCreateInaccessibleTile(rx, ry, f-1)) {
         m[rx][ry] = WALL;
         s--;
         f--;
