@@ -5,6 +5,11 @@ int placedBomb = 0;
 int life = 3;
 int speed = 120;
 
+PImage[] playerUp;
+PImage[] playerRight;
+PImage[] playerDown;
+PImage[] playerLeft;
+
 final float PLAYER_TOUCHED_COOLDOWN = 3.0;
 
 class Player {
@@ -12,6 +17,9 @@ class Player {
   final int DIR_RIGHT = 1;
   final int DIR_DOWN = 2;
   final int DIR_LEFT = 3;
+  
+  final float ANIM_DURATION = .2;
+  float animationTime;
 
   boolean direction[] = new boolean[4];
   int lastPressedDirection = -1;
@@ -24,39 +32,58 @@ class Player {
   int actualDirection;
 
   Player(Map m) {
+    actualDirection=DIR_DOWN;
     map = m;
     posX = map.startX*TILE_SIZE;
     posY = map.startY*TILE_SIZE;
   }
 
   void process(float delta) {
-    if (!isMoving) {
-      tryStartMove();
-    } else {
-      moveTowardsDestination(delta);
-    }
+    animationTime+=delta*speed/100;
+    if(animationTime >= ANIM_DURATION*4)animationTime = 0;
+    if (isMoving) moveTowardsDestination(delta);
+    if (!isMoving)tryStartMove();
     if (touchedCooldown > 0) touchedCooldown-=delta;
   }
   
   void draw() {
     if (touchedCooldown <= 0 || int(touchedCooldown*4)%2 == 0) {
-      fill(0, 0, 255);
-      ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/4*3, TILE_SIZE/4*3);
 
-      if(!isMoving)drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+      if(!isMoving){
+        switch(actualDirection){
+          case DIR_UP:
+          image(playerUp[0],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+          case DIR_RIGHT:
+          image(playerRight[0],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+          case DIR_DOWN:
+          image(playerDown[0],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+          case DIR_LEFT: 
+          image(playerLeft[0],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
+          break;
+        }
+        
+        drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
+      }
       else{
         switch(actualDirection){
           case DIR_UP:
+          image(playerUp[int(animationTime/ANIM_DURATION)],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
           drawBellow(int(posX/TILE_SIZE),int((posY-1)/TILE_SIZE)+1,map);
           break;
           case DIR_RIGHT:
+          image(playerRight[int(animationTime/ANIM_DURATION)],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
           drawBellow(int(posX/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
           break;
           case DIR_DOWN:
+          image(playerDown[int(animationTime/ANIM_DURATION)],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE)+1,map);
           break;
           case DIR_LEFT: 
+          image(playerLeft[int(animationTime/ANIM_DURATION)],posX,posY-TILE_SIZE/4,TILE_SIZE,TILE_SIZE+TILE_SIZE/4);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
           drawBellow(int((posX-1)/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
           break;

@@ -13,7 +13,7 @@ void drawStats(){
   fill(255);
   text("Level:" + level, 1024/6*5-32, 1008);
   
-  textAlign(CORNER,CENTER);
+  /*textAlign(CORNER,CENTER);
   textSize(32);
-  text("FPS:"+int(frameRate), 64,32);
+  text("FPS:"+int(frameRate), 64,32);*/
 }

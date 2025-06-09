@@ -1,12 +1,15 @@
 PImage[] slimeIdle; 
+PImage[] slimeUp; 
+PImage[] slimeRight; 
 PImage[] slimeDown; 
+PImage[] slimeLeft; 
 
 class BasicBot{
-  final float ANIM_DURATION = .3;
+  final float ANIM_DURATION = .2;
+  float animationTime;
   
   float posX, posY;
   float destX, destY;
-  float animationTime;
   int botSpeed = 120;
   int lastDirection;
   Map map;
@@ -31,23 +34,20 @@ class BasicBot{
       else{
         switch(lastDirection){
           case 0:
-          fill(255, 0, 0);
-          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          image(slimeUp[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
           drawBellow(int(posX/TILE_SIZE),int((posY-1)/TILE_SIZE)+1,map);
           break;
           case 1:
-          fill(255, 0, 0);
-          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          image(slimeRight[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
           drawBellow(int(posX/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
           break;
           case 2:
-          image(slimeIdle[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
+          image(slimeDown[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE)+1,map);
           break;
           case 3: 
-          fill(255, 0, 0);
-          ellipse(posX+TILE_SIZE/2, posY+TILE_SIZE/2, TILE_SIZE/2, TILE_SIZE/2);
+          image(slimeLeft[int(animationTime/ANIM_DURATION)],posX,posY,TILE_SIZE,TILE_SIZE);
           drawBellow(int(posX/TILE_SIZE),int(posY/TILE_SIZE),map);
           drawBellow(int((posX-1)/TILE_SIZE)+1,int(posY/TILE_SIZE),map);
           break;
@@ -56,7 +56,7 @@ class BasicBot{
   }
   
   void process(float delta){
-    animationTime+=delta;
+    animationTime+=delta*botSpeed/100;
     if(animationTime >= ANIM_DURATION*4)animationTime = 0;
     if (isMoving) moveTowardsDestination(delta);
     if (!isMoving)tryStartMove();

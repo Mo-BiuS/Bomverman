@@ -1,5 +1,5 @@
 final float bombTimer = 3;
-final float explosionDuration = .2;
+final float explosionDuration = .8;
 
 PImage imgBomb;
 

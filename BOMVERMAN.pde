@@ -8,6 +8,9 @@ int level = 1;
 int lastTime = 0;
 float deltaTime = 0;
 
+float resetTime = 2;
+float timer;
+
 void setup(){
   size(960,1040);
   noStroke();
@@ -26,7 +29,15 @@ void draw(){
   deltaTime = (millis() - lastTime) / 1000.0;
   lastTime = millis();
 
+  /*timer+=deltaTime;
+  if(timer > resetTime){
+    timer = 0;
+    m.reset();
+  }*/
+
   m.process(deltaTime);
+  
+  
     
   background(0);
   translate(0,TILE_SIZE/4);
@@ -35,6 +46,7 @@ void draw(){
   m.drawBonus();
   m.drawPlayer();
   m.drawBomb();
+  m.drawExplosion();
   translate(0,-TILE_SIZE/4);
   drawStats();
 }

@@ -25,6 +25,13 @@ PGraphics imgAllTIle;
 PGraphics imgAllObstacle;
 PGraphics imgAllWall;
 
+PImage[] imgExplosionCorner;
+PImage[] imgExplosionEnd;
+PImage[] imgExplosionLine;
+PImage[] imgExplosionSolo;
+PImage[] imgExplosionCenter;
+PImage[] imgExplosionT;
+
 
 class Map {
   final int START_RANGE = 1;
@@ -71,16 +78,6 @@ class Map {
     image(imgAllWall,0,0);
     translate(0,TILE_SIZE/4);
     if(canExitLevel)image(imgEndActivated, endX * TILE_SIZE, endY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
-    
-    fill(255, 0, 0);
-    for (int x = 0; x < m.length; x++) {
-      for (int y = 0; y < m[0].length; y++) {
-        if (bombSplash[x][y] > 0) {
-          rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-          drawBellow(x,y,this);
-        }
-      }
-    }
   }
   void drawBomb() {
     for (int i = 0; i < bombList.size(); i++)bombList.get(i).draw();
@@ -187,10 +184,12 @@ class Map {
     while (s > 0) {
       int rx = int(random(sx));
       int ry = int(random(sy));
-      if (m[rx][ry] != WALL && ((rx%2==0 && ry%2==1) || (rx%2==1 && ry%2==0)) && !doesGenWallAtCreateInaccessibleTile(rx, ry, f-1)) {
-        m[rx][ry] = WALL;
-        s--;
-        f--;
+      if (m[rx][ry] != WALL && ((rx%2==0 && ry%2==1) || (rx%2==1 && ry%2==0))) {
+        if(!isCut(m,rx, ry)){
+          m[rx][ry] = WALL;
+          s--;
+          f--;
+        }
       }
     }
 
@@ -348,24 +347,6 @@ class Map {
     return !isIn(px, py) || !(m[px][py] == GROUND);
   }
 
-  boolean doesGenWallAtCreateInaccessibleTile(int rx, int ry, int f) {
-    m[rx][ry] = WALL;
-    int i = propagate(rx, ry);
-    return i == f-1;
-  }
-  int propagate(int rx, int ry) {
-    if (m[rx][ry] == WALL || m[rx][ry] == -1)return 0;
-    else {
-      m[rx][ry] = -1;
-      int rep = 1;
-      rep+=propagate(rx+1, ry);
-      rep+=propagate(rx-1, ry);
-      rep+=propagate(rx, ry+1);
-      rep+=propagate(rx, ry-1);
-      m[rx][ry] = GROUND;
-      return rep;
-    }
-  }
   ArrayList<PVector> getPlayerStartArea(int startX, int startY) {
     if (m[startX][startY] == GROUND || m[startX][startY] == START) {
       ArrayList<PVector> rep = new ArrayList<PVector>();
@@ -385,5 +366,45 @@ class Map {
 
       return rep;
     } else return new ArrayList<PVector>();
+  }
+  
+  void drawExplosion(){
+    fill(255, 0, 0);
+    for (int x = 0; x < m.length; x++) {
+      for (int y = 0; y < m[0].length; y++) {
+        if (bombSplash[x][y] > 0) {
+          int mask = 0;
+          if(y>0 && bombSplash[x][y-1]>0) mask+=1;
+          if(x<m.length && bombSplash[x+1][y]>0) mask+=2;
+          if(y<m[0].length && bombSplash[x][y+1]>0) mask+=4;
+          if(x>0 && bombSplash[x-1][y]>0) mask+=8;
+          
+          push();
+          translate(x*TILE_SIZE+TILE_SIZE/2, y*TILE_SIZE+TILE_SIZE/2);
+          switch(mask){
+            case 0 :                image(imgExplosionSolo  [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 1 : rotate(   PI); image(imgExplosionEnd   [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 2 : rotate(-PI/2); image(imgExplosionEnd   [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 3 : rotate(-PI/2); image(imgExplosionCorner[int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 4 :                image(imgExplosionEnd   [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 5 :                image(imgExplosionLine  [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 6 :                image(imgExplosionCorner[int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 7 : rotate(-PI/2); image(imgExplosionT     [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 8 : rotate( PI/2); image(imgExplosionEnd   [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 9 : rotate(   PI); image(imgExplosionCorner[int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 10: rotate( PI/2); image(imgExplosionLine  [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 11: rotate(   PI); image(imgExplosionT     [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 12: rotate( PI/2); image(imgExplosionCorner[int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 13: rotate( PI/2); image(imgExplosionT     [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 14:                image(imgExplosionT     [int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            case 15:                image(imgExplosionCenter[int(bombSplash[x][y]*10)%2],-TILE_SIZE/2, -TILE_SIZE/2, TILE_SIZE, TILE_SIZE);break;
+            default:rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);break;
+          }
+          pop();
+          
+          drawBellow(x,y,this);
+        }
+      }
+    }
   }
 }
