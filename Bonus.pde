@@ -4,9 +4,9 @@ final int BONUS_TYPE_SPEED = 2;
 final int BONUS_TYPE_LIFE  = 3;
 
 final float WEIGHT_POWER = 6;
-final float WEIGHT_NBOMB = 2;
-final float WEIGHT_SPEED = 4;
-final float WEIGHT_LIFE  = 1;
+final float WEIGHT_NBOMB = 3;
+final float WEIGHT_SPEED = 6;
+final float WEIGHT_LIFE  = 2;
 
 PImage imgPower;
 PImage imgNBomb;
@@ -23,10 +23,15 @@ class Bonus{
     posY = py;
     map = m;
     
-    float r = random(WEIGHT_POWER+WEIGHT_NBOMB+WEIGHT_SPEED);
-    if(r <= WEIGHT_POWER)type = BONUS_TYPE_POWER;
-    else if(r <= WEIGHT_POWER+WEIGHT_NBOMB)type = BONUS_TYPE_NBOMB;
-    else if(r <= WEIGHT_POWER+WEIGHT_NBOMB+WEIGHT_SPEED)type = BONUS_TYPE_SPEED;
+    float wPower = WEIGHT_POWER/power;
+    float wNBomb = WEIGHT_NBOMB/nBomb;
+    float wSpeed = WEIGHT_SPEED/(speed/60);
+    float wLife  = WEIGHT_LIFE/life;
+    
+    float r = random(wPower+wNBomb+wSpeed+wLife);
+    if(r <= wPower)type = BONUS_TYPE_POWER;
+    else if(r <= wPower+wNBomb)type = BONUS_TYPE_NBOMB;
+    else if(r <= wPower+wNBomb+wSpeed)type = BONUS_TYPE_SPEED;
     else type = BONUS_TYPE_LIFE;
   }
   void draw(){

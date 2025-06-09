@@ -44,6 +44,7 @@ class Player {
     if (isMoving) moveTowardsDestination(delta);
     if (!isMoving)tryStartMove();
     if (touchedCooldown > 0) touchedCooldown-=delta;
+    if(touchedCooldown <= 0 && map.bombSplash[int((posX+TILE_SIZE/2)/TILE_SIZE)][int((posY+TILE_SIZE/2)/TILE_SIZE)] > 0)map.playerDammage();
   }
   
   void draw() {

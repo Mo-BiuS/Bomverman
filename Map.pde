@@ -7,7 +7,7 @@ final int END = 5;
 
 final int SUB_WALL = 8;
 final float OBSTACLE_FILLING_RATIO = .4;
-final float BONUS_RATIO = .2;
+float bonusRatio = .2;
 int nBot = 4;
 
 ArrayList<PImage> imgTile;
@@ -77,7 +77,10 @@ class Map {
     translate(0,-TILE_SIZE/4);
     image(imgAllWall,0,0);
     translate(0,TILE_SIZE/4);
-    if(canExitLevel)image(imgEndActivated, endX * TILE_SIZE, endY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
+    if(canExitLevel){
+      image(imgEndActivated, endX * TILE_SIZE, endY * TILE_SIZE,TILE_SIZE,TILE_SIZE);
+      drawBellow(endX,endY,this);
+    }
   }
   void drawBomb() {
     for (int i = 0; i < bombList.size(); i++)bombList.get(i).draw();
@@ -120,6 +123,7 @@ class Map {
     if (canExitLevel && p.getPosX() == endX && p.getPosY() == endY) {
       level+=1;
       life+=1;
+      if(bonusRatio > 0.8)bonusRatio-=.04;
       reset();
     } else {
       for (int i = 0; i < bonusList.size(); i++) {
@@ -203,7 +207,7 @@ class Map {
 
         float item = random(1);
 
-        if (item <= BONUS_RATIO)m[rx][ry] = ITEM_OBSTACLE;
+        if (item <= bonusRatio)m[rx][ry] = ITEM_OBSTACLE;
         else m[rx][ry] = OBSTACLE;
         rp++;
       }
@@ -346,7 +350,12 @@ class Map {
   boolean isTileColliding(int px, int py) {
     return !isIn(px, py) || !(m[px][py] == GROUND);
   }
-
+  
+  void killBot(BasicBot b){
+    basicBotList.remove(b);
+    if (basicBotList.isEmpty())canExitLevel = true;
+  }
+  
   ArrayList<PVector> getPlayerStartArea(int startX, int startY) {
     if (m[startX][startY] == GROUND || m[startX][startY] == START) {
       ArrayList<PVector> rep = new ArrayList<PVector>();

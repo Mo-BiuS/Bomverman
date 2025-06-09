@@ -60,6 +60,7 @@ class BasicBot{
     if(animationTime >= ANIM_DURATION*4)animationTime = 0;
     if (isMoving) moveTowardsDestination(delta);
     if (!isMoving)tryStartMove();
+    if(map.bombSplash[int((posX+TILE_SIZE/2)/TILE_SIZE)][int((posY+TILE_SIZE/2)/TILE_SIZE)] > 0)map.killBot(this);
   }
   
   void tryStartMove(){
